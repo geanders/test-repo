@@ -3,6 +3,8 @@ test-repo
 
 ## Week 1 Meeting (June 4)
 
+TEST changes.
+
 We went through three examples: 
 
 * Creating a graph that showed countries' medal-standings for the Sochi Olympics (since the R code pulled data directly from a website, it could be updated by just re-running the code as standings changed during the Olympics)
