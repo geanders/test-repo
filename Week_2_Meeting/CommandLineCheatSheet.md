@@ -11,7 +11,7 @@ pwd
 
 ## ls
 
-"List". List all the files and directories in your current working directory (and, remember, you can figure out the name of that with `pwd`):
+"List". List all the files and directories in your current working directory (and, remember, you can figure out the name of *that* with `pwd`):
 
 ```
 ls 
@@ -19,7 +19,7 @@ ls
 
 ## mkdir
 
-"Make directory". Make a new (sub)directory in whatever directory you're in (which you can figure out using `pwd`). For example, to make a new subdirectory called "Week_1_Meeting" in whatever directory I'm working in, I would type:
+"Make directory". Make a new (sub)directory in whatever directory you're in (which, again, you can figure out using `pwd`). For example, to make a new subdirectory called "Week_1_Meeting" in whatever directory I'm working in, I would type:
 
 ```
 mkdir Week_1_Meeting
@@ -33,7 +33,7 @@ mkdir Week_1_Meeting
 cd /Users/brookeanderson/test-repo/Week_1_Meeting
 ```
 
-However, there are also some shortcuts for getting to certain directories.
+However, there are also some shortcuts for getting to certain directories that can save a lot of time.
 
 If it's a directory right below the one you're in right now (in which case it will show up when you type `ls`), you can just put the name of it, like:
 
@@ -52,3 +52,13 @@ If you want to get back to your home directory, from *anywhere*, you can put in 
 ```
 cd ~
 ```
+
+## touch
+
+Create a new file in your directory. For example, you can create a new (blank) markdown file called "CommandLineCheatSheet.md" by typing:
+
+```
+touch CommandLineCheatSheet.md
+```
+
+This file should now show up when you type `ls` when you're working in this directory. If you want to get really fancy, you could open and edit this file from the command line using a text editor like emacs or vi, but I cope out here and just find the file and open it using something like TextEdit or Notepad.
