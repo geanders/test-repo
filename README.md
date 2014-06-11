@@ -1,6 +1,8 @@
 test-repo
 =========
 
+I'm trying to make changes-- this is Brooke.
+
 ## Week 1 Meeting (June 4)
 
 We went through three examples: 
