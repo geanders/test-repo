@@ -1,3 +1,6 @@
+## Example code used in in-person meeting at CSU for Data Scientists Toolbox.
+## Code adapted in part or full from rud.is: http://rud.is/b/2013/09/19/animated-irl-pirate-attacks-in-r/
+
 library(maps)
 library(hexbin)
 library(maptools)

@@ -1,3 +1,5 @@
+## Example code used in in-person meeting at CSU for Data Scientists Toolbox.
+## Code adapted in part or full from Jean-Robert's blog: ean-robert.github.io
 arret_ligne <- read.csv("http://data.ratp.fr/?eID=ics_od_datastoredownload&file=60", 
                         header=F, sep="#",
                         col.names=c("ID","Ligne","Type"),

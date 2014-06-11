@@ -1,3 +1,6 @@
+## Example code used in in-person meeting at CSU for Data Scientists Toolbox.
+## Code adapted in part or full from TRinker's R blog: http://trinkerrstuff.wordpress.com/2014/02/09/sochi-olympic-medals-2/
+
 packs <- c("knitr", "ggplot2", "XML", "reshape2", "rCharts")
 lapply(packs, require, character.only = TRUE)
 
