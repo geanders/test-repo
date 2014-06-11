@@ -3,7 +3,7 @@ Command Line Cheat Sheet
 
 ## pwd
 
-Literally, "print working directory". Find out where in the jungle of computer files on your computer you are. 
+Literally, "print working directory". Find out where in the jungle of your computer files you are. 
 
 ```
 pwd
@@ -52,6 +52,8 @@ If you want to get back to your home directory, from *anywhere*, you can put in 
 ```
 cd ~
 ```
+
+Your home directory is the directory you're in when you first open Terminal or git bash. It's probably something like `\Users\[your name]\`.
 
 ## touch
 
