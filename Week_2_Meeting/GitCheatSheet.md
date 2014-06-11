@@ -40,6 +40,40 @@ There's [a great set of instructions](https://help.github.com/articles/fork-a-re
 
 ## Setting up your own repository based on a directory on your computer
 
+You can also set up your own repository and fill it up with whatever you'd like. As an example, I have some code for calculating the heat index in a folder called "weathermetrics". I've published this as an R package, but it would be nice to have it on GitHub, too. To do that, I'll take the following steps: 
+
+First, go to your GitHub page and choose the "Repostories" tab. From there you can click on the "New" button near the top right-hand corner. You can choose a name as well as whether the repository is public or private and whether it will have a README file (you probably want public and a README file). In my example, I'll name the repository "weathermetrics". Once you've done this, the new repository should show up on your GitHub page. 
+
+Now you'll need to link up the directory on your computer with this GitHub repository. First, open your command line and use `cd` to get to the directory you want to go into the GitHub repository. Once you're there (check by typing `pwd` and making sure it's what you want), you can initialize the directory as a local (i.e., on your laptop) git repository using `git init`, `git add`, and `git commit`: 
+
+```
+git init
+git add -A
+git commit -m "Initial commit of [whatever is in your directory]"
+```
+
+Now your directory is a git repository on your computer, but you'll want to get it up as a repository on GitHub, too. To do that, use the `git remote` function with the name of the repository you created on git:
+
+```
+git remote add origin https://github.com/[your git username]/[the name of the repository you made on GitHub you want to connect to].git
+```
+
+For example, I want to connect the directory of weather functions on my computer to the GitHub repository I created called "weathermetrics", so I'll type:
+
+```
+git remote add origin https://github.com/geanders/weathermetrics.git
+```
+
+Now I can push everything up on GitHub using `git push`:
+
+```
+git push -f
+```
+
+NOTE: The `-f` option here means that the version on your laptop will override anything on your GitHub directory, so just use it to initially get your directory up. Alternatively, I think you could probably `pull` the version of the repository that's on GitHub and merge it with the git repository on your laptop, then `push` from your laptop, but I haven't done this yet.
+
+Now everything in your directory should show up online in your GitHub repository.
+
 # Commands for once you've gotten going
 Once you've initialized a directory as a git repository and linked it up with one in GitHub, you'll only need a few commands to keep things current between the directory on your laptop and the associated GitHub repository: `git add`, `git commit`, and `git push`.
 
