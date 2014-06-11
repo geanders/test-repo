@@ -110,15 +110,45 @@ git push
 
 Any errors? Sometimes I'll get some with the first push, saying that I need to pull the GitHub version and merge any changes. Let's deal with that if we get that error.
 
-Once you've got your laptop and GitHub repositories going and linked, try editing or adding files to the directory on your laptop and then sending them to GitHub using:
+## 5. Add a file with some simple R code to your laptop "MyRCode" directory and push it to GitHub.
+
+Once you've got your laptop and GitHub repositories going and linked, try editing or adding files to the directory on your laptop and then sending them to GitHub. We'll try adding a simple R file. 
+
+First, go to the command line use `pwd` to make sure you're in the right directory (if you are, you should get something that ends with "MyRCode"). If not, use `cd` to move to the "MyRCode" directory. 
+
+Add a blank R file using:
+
+```
+touch SimpleExample.R
+```
+
+Open the file you just created in RStudio. Add the following code:
+
+```
+df <- c(5, 23, 14, 9, 16, 3)
+mean(df)
+hist(df)
+```
+
+Save the file in R. Go back to your command line. Make sure you're still in the right directory using `pwd`. Save your files to your laptop's git repository and then push them to your GitHub account using:
 
 ```
 git add -A
-git commit -m "[Your message about the change you made]"
+git commit -m "Created SimpleExample.R file"
 git push
 ```
 
-## 5. Fetch and merge changes I make to the original "test-repo" to your personal copy
+Check and see if the changes made it up to your GitHub repository. 
+
+Now go back to the R file on your laptop and edit the file to include comments saying what each file does. A comment can be put on any line if you start it with two hash tags, like:
+
+```
+## This is an example of an R comment
+```
+
+Save, add, commit, and push again. Check your GitHub repository to see if the changes made it through.  
+
+## 6. Fetch and merge changes I make to the original "test-repo" to your personal copy
 
 Now I'll try making some changes to files in "test-repo". Once I make the changes, try getting them to your version using `fetch` and `merge`:
 
