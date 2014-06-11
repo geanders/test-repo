@@ -62,7 +62,63 @@ git push
 
 The command line will ask you for your GitHub username and then your password (if you've forgotten either of these, I think you should be able to get GitHub toemail them to the email address you used when you signed up). Now go check your GitHub account and see if the changes you made went through.
 
-## 4. Fetch and merge changes I make to the original "test-repo" to your personal copy
+## 4. Create your own repository
+
+Go to your GitHub account and click on the "Repositories" tab. On the top right there should be a button that says "New". Click it. This takes you through the steps to create a new repository on your GitHub account. Create one called "MyRCode". Make it public and give it a README file (these are all options when you make the repository).
+
+Now you have the new repository on GitHub (check your account and make sure), but it's not on your computer yet. 
+
+Open your command line and make sure you're in your home directory (check by typing `pwd`). If you are, make a new directory called "MyRCode" using `mkdir` then move into it using `cd`:
+
+```
+mkdir MyRCode
+cd MyRCode
+```
+
+Check if you've succeeded using `pwd`. 
+
+Initialize this directory as a git repository using `git init`:
+
+```
+git init
+```
+
+Create a README file using `touch`:
+
+```
+touch README
+```
+
+Add and commit this change to your laptop's git repository:
+
+```
+git add -A
+git commit -m "Created README file"
+```
+
+Now we have the appropriate repositories set up on both your laptop and your GitHub account, we just need to link them using `git add` (replace [username] with your GitHub user name):
+
+```
+git remote add origin https://github.com/[username]/MyRCode.git
+```
+
+Now sync the new files using `git push`:
+
+```
+git push
+```
+
+Any errors? Sometimes I'll get some with the first push, saying that I need to pull the GitHub version and merge any changes. Let's deal with that if we get that error.
+
+Once you've got your laptop and GitHub repositories going and linked, try editing or adding files to the directory on your laptop and then sending them to GitHub using:
+
+```
+git add -A
+git commit -m "[Your message about the change you made]"
+git push
+```
+
+## 5. Fetch and merge changes I make to the original "test-repo" to your personal copy
 
 Now I'll try making some changes to files in "test-repo". Once I make the changes, try getting them to your version using `fetch` and `merge`:
 

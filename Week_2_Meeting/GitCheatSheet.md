@@ -42,7 +42,7 @@ There's [a great set of instructions](https://help.github.com/articles/fork-a-re
 
 You can also set up your own repository and fill it up with whatever you'd like. As an example, I have some code for calculating the heat index in a folder called "weathermetrics". I've published this as an R package, but it would be nice to have it on GitHub, too. To do that, I'll take the following steps: 
 
-First, go to your GitHub page and choose the "Repostories" tab. From there you can click on the "New" button near the top right-hand corner. You can choose a name as well as whether the repository is public or private and whether it will have a README file (you probably want public and a README file). In my example, I'll name the repository "weathermetrics". Once you've done this, the new repository should show up on your GitHub page. 
+First, go to your GitHub page and choose the "Repositories" tab. From there you can click on the "New" button near the top right-hand corner. You can choose a name as well as whether the repository is public or private and whether it will have a README file (you probably want public and a README file). In my example, I'll name the repository "weathermetrics". Once you've done this, the new repository should show up on your GitHub page. 
 
 Now you'll need to link up the directory on your computer with this GitHub repository. First, open your command line and use `cd` to get to the directory you want to go into the GitHub repository. Once you're there (check by typing `pwd` and making sure it's what you want), you can initialize the directory as a local (i.e., on your laptop) git repository using `git init`, `git add`, and `git commit`: 
 
