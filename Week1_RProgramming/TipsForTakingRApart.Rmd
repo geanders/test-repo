@@ -1,0 +1,99 @@
+---
+title: "Tips for taking R apart"
+output: ioslides_presentation
+---
+
+## 1. Evaluate the full line and see what the output looks like
+
+```{r, echo = FALSE}
+available.rows <- 1:27
+available.rowseats <- LETTERS[1:6]
+available.seats <- expand.grid(available.rows, available.rowseats)
+available.seats <- apply(available.seats, 1, paste, collapse = "")
+available.seats <- gsub(" ", "", available.seats) ## don't worry too much about this,
+                                                  ## it just seems that there were 
+                                                  ## some extra spaces at the start of
+                                                  ## some seat names, so I'm cleaning
+                                                  ## that up.
+
+manifest <- data.frame(passenger = 1:(6 * 27),
+                       assigned.seat = available.seats[sample(1:length(available.seats))], 
+                       stringsAsFactors = FALSE)
+manifest$row <-  as.numeric(gsub("[A-Z]", "", manifest$assigned.seat))
+manifest$seat <- gsub("[0-9]", "", manifest$assigned.seat)
+```
+
+Evaluate: 
+
+```{r}
+seat.availability <- factor(rep("Empty", length.out = nrow(manifest)),
+                            levels = c("Empty", "Taken"))
+```
+
+Then check:
+
+```{r}
+head(seat.availability)
+length(seat.availability)
+```
+
+## 2. Check out any objects within the call
+
+```{r}
+seat.availability <- factor(rep("Empty", length.out = nrow(manifest)),
+                            levels = c("Empty", "Taken"))
+```
+
+Check out: 
+
+```{r}
+head(manifest, 3)
+```
+
+## 3. Evaluate calls within calls
+
+```{r}
+seat.availability <- factor(rep("Empty", length.out = nrow(manifest)),
+                            levels = c("Empty", "Taken"))
+```
+
+For this call, check out:
+```{r}
+nrow(manifest)
+head(rep("Empty", length.out = nrow(manifest)))
+c("Empty", "Taken")
+```
+
+## 4. Use "?" to find out about functions
+
+```{r}
+seat.availability <- factor(rep("Empty", length.out = nrow(manifest)),
+                            levels = c("Empty", "Taken"))
+```
+
+For this call, check out:
+```{r, eval=FALSE}
+?nrow
+?rep
+?factor
+```
+
+Also, try googling "basic R example [function name]"
+
+## 5. If you're looking at a loop, assign i to the first value of the loop then check out the code in the loop
+
+```{r, eval=FALSE}
+j <- 0
+for(i in 1:3){
+        j <- j + i
+}
+```
+
+For this loop, check out:
+```{r}
+j <- 0
+
+i <- 1
+j <- i + 1
+j
+```
