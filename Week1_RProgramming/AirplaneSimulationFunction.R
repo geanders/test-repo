@@ -27,6 +27,7 @@ fill.airplane <- function(rows = 27, seats = 6, plot.airplane = FALSE){
         manifest$actual.seat <- rep(NA) 
 
         manifest$actual.seat[1] <- sample(names(seat.availability), 1) 
+        seat.availability[manifest$actual.seat[1]] <- "Taken"
 
         for(i in 2:nrow(manifest)){  
                 assigned.seat <- manifest[manifest$passenger == i, "assigned.seat"]
@@ -37,7 +38,7 @@ fill.airplane <- function(rows = 27, seats = 6, plot.airplane = FALSE){
                         empty.seats <- names(seat.availability)[seat.availability == "Empty"]
                         manifest$actual.seat[i] <- sample(empty.seats, 1)
                 }
-                seat.availability[manifest$actual.seat] <- "Taken"
+                seat.availability[manifest$actual.seat[i]] <- "Taken"
         }  
 
         check.assigned <- manifest$assigned.seat == manifest$actual.seat

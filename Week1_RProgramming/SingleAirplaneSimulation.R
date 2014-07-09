@@ -60,6 +60,7 @@ manifest$actual.seat <- rep(NA) ## Create a column in the manifest dataframe
 manifest$actual.seat[1] <- sample(names(seat.availability), 1) ## pick a random
                                                                ## seat for the 
                                                                ## first passenger
+seat.availability[manifest$actual.seat[1]] <- "Taken"
 
 ## For the rest of the passengers, the above loop seats them according to the
 ## rules (if their seat is free, they take it. Otherwise, they pick a random
@@ -73,7 +74,7 @@ for(i in 2:nrow(manifest)){
                 empty.seats <- names(seat.availability)[seat.availability == "Empty"]
                 manifest$actual.seat[i] <- sample(empty.seats, 1)
         }
-        seat.availability[manifest$actual.seat] <- "Taken"
+        seat.availability[manifest$actual.seat[i]] <- "Taken"
 }  
 
 ## Following this process, everyone on the manifest should now have an actual seat
