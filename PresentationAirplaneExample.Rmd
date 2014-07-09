@@ -1,0 +1,236 @@
+---
+title: "R Take Apart Lab"
+subtitle: "Airplane Example"
+output: ioslides_presentation
+---
+
+## The question
+
+Everyone on an airplane has been 
+assigned a seat. 
+
+The first person to enter, rascal that he is, sits at random
+in the airplane instead of finding his seat (although he may randomly sit
+where he's supposed to!). 
+
+For all the rest of the passengers to board, 
+if their assigned seat is available, they will sit there. Otherwise, they 
+will choose a random seat from the ones that are still empty. 
+
+We want to know
+the probability that the last person to board will end up in the seat 
+originally assigned to him. 
+
+(Source of question : [Paul J. Nahin](http://www.amazon.com/Will-You-Alive-Years-Now/dp/0691156808/ref=sr_1_1?ie=UTF8&qid=1404938362&sr=8-1&keywords=will+you+be+alive))
+
+## Basic steps
+
+To solve this problem, we will: 
+
+- [Figure out a way in R to simulate the airplane filling](https://github.com/geanders/test-repo/blob/master/Week1_RProgramming/SingleAirplaneSimulation.R)
+- [Put that code into a function](https://github.com/geanders/test-repo/blob/master/Week1_RProgramming/AirplaneSimulationFunction.R)
+- [Run the function a lot of times and see how often the last person gets his seat](https://github.com/geanders/test-repo/blob/master/Week1_RProgramming/MultipleAirplaneSimultations.R)
+
+## Simulating the airplane filling
+
+Let's think about how we can break down the code to simulate the airplane filling:
+
+- Create a list of all the seats on the airplane
+- Randomly assign passengers to seats
+- Determine each passenger's actual seat (random for first person, for everyone else: assigned if that seat is still free, otherwise random)
+
+## List of seats on the airplane
+
+For example, if the airplane has 27 rows and 6 seats in each row (seats A--F):
+
+```{r, echo = FALSE}
+available.rows <- 1:27
+available.rowseats <- LETTERS[1:6]
+available.seats <- expand.grid(available.rows, available.rowseats)
+available.seats <- apply(available.seats, 1, paste, collapse = "")
+available.seats <- gsub(" ", "", available.seats)
+```
+
+```{r}
+head(available.seats, 50)
+length(available.seats)
+```
+
+## Randomly assign passengers to seats
+
+```{r, echo = FALSE}
+manifest <- data.frame(passenger = 1:(6 * 27),
+                       assigned.seat = available.seats[sample(1:length(available.seats))], ## scramble the order
+                       stringsAsFactors = FALSE)
+manifest$row <-  as.numeric(gsub("[A-Z]", "", manifest$assigned.seat))
+manifest$seat <- gsub("[0-9]", "", manifest$assigned.seat)
+```
+
+```{r}
+head(manifest)
+nrow(manifest)
+```
+
+## Determine each person's actual seat
+
+First, create a vector of seat availability that you can change as people get seats: 
+
+```{r, echo = FALSE}
+seat.availability <- factor(rep("Empty", length = nrow(manifest)),
+                            levels = c("Empty", "Taken"))
+names(seat.availability) <- available.seats ## Create a vector that keeps track
+                                            ## of whether each seat is empty or
+                                            ## taken.
+```
+
+```{r}
+head(seat.availability, 20)
+seat.availability["10A"]
+```
+
+## Determine each person's actual seat
+
+Next, go through each passenger and give them their seat based on the boarding rules (randomly pick a seat for the first person, then for everyone else, they get their assigned seat if it's free and otherwise get a random seat):
+
+```{r, echo = FALSE}
+manifest$actual.seat <- rep(NA) ## Create a column in the manifest dataframe
+                                ## where we'll put the actual seat the passenger
+                                ## ends up in.
+
+manifest$actual.seat[1] <- sample(names(seat.availability), 1) ## pick a random
+                                                               ## seat for the 
+                                                               ## first passenger
+
+## For the rest of the passengers, the above loop seats them according to the
+## rules (if their seat is free, they take it. Otherwise, they pick a random
+## seat from the seats that are still open.)
+for(i in 2:nrow(manifest)){  
+        assigned.seat <- manifest[manifest$passenger == i, "assigned.seat"]
+        check.seat <- seat.availability[assigned.seat]
+        if(check.seat == "Empty"){
+                manifest$actual.seat[i] <- assigned.seat
+        } else {
+                empty.seats <- names(seat.availability)[seat.availability == "Empty"]
+                manifest$actual.seat[i] <- sample(empty.seats, 1)
+        }
+        seat.availability[manifest$actual.seat] <- "Taken"
+}  
+
+check.assigned <- manifest$assigned.seat == manifest$actual.seat
+manifest$got.assigned.seat <- ifelse(check.assigned, "Yes", "No")
+manifest$got.assigned.seat <- factor(manifest$got.assigned.seat,
+                                     levels = c("Yes", "No"))
+
+```
+
+```{r}
+manifest[1:5, c(1, 2, 5, 6)]
+```
+
+## Result of one simulation
+
+```{r, echo=FALSE, fig.width=5, fig.height=5}
+library(ggplot2)
+manifest$last.passenger <- factor(rep("No"), levels = c("No", "Yes"))
+manifest$last.passenger[manifest$passenger == 6*27] <- "Yes"
+
+ap <- ggplot(manifest, aes(x = seat, y = row, group = last.passenger))
+ap <- ap + scale_y_reverse()
+ap <- ap + geom_point(aes(color = last.passenger, fill = got.assigned.seat),
+                      shape = 22, size = 5)
+ap <- ap + scale_color_manual(values = c("black", "red")) + 
+        scale_fill_manual(values = c("white", "darkblue"))
+print(ap)
+```
+
+## Create a function to run the simulation
+
+```{r, echo = FALSE}
+fill.airplane <- function(rows = 27, seats = 6, plot.airplane = FALSE){
+        available.rows <- 1:rows
+        available.rowseats <- LETTERS[1:seats]
+        available.seats <- expand.grid(available.rows, available.rowseats)
+        available.seats <- apply(available.seats, 1, paste, collapse = "")
+        available.seats <- gsub(" ", "", available.seats) 
+
+        manifest <- data.frame(passenger = 1:(seats * rows),
+                       assigned.seat = available.seats[sample(1:length(available.seats))], 
+                       stringsAsFactors = FALSE)
+        manifest$row <-  as.numeric(gsub("[A-Z]", "", manifest$assigned.seat))
+        manifest$seat <- gsub("[0-9]", "", manifest$assigned.seat)
+
+        manifest$last.passenger <- factor(rep("No"), levels = c("No", "Yes"))
+        manifest$last.passenger[manifest$passenger == seats * rows] <- "Yes"
+
+
+        seat.availability <- factor(rep("Empty", length = nrow(manifest)),
+                               levels = c("Empty", "Taken"))
+        names(seat.availability) <- available.seats 
+
+        manifest$actual.seat <- rep(NA) 
+
+        manifest$actual.seat[1] <- sample(names(seat.availability), 1) 
+
+        for(i in 2:nrow(manifest)){  
+                assigned.seat <- manifest[manifest$passenger == i, "assigned.seat"]
+                check.seat <- seat.availability[assigned.seat]
+                if(check.seat == "Empty"){
+                        manifest$actual.seat[i] <- assigned.seat
+                } else {
+                        empty.seats <- names(seat.availability)[seat.availability == "Empty"]
+                        manifest$actual.seat[i] <- sample(empty.seats, 1)
+                }
+                seat.availability[manifest$actual.seat] <- "Taken"
+        }  
+
+        check.assigned <- manifest$assigned.seat == manifest$actual.seat
+        manifest$got.assigned.seat <- ifelse(check.assigned, "Yes", "No")
+        manifest$got.assigned.seat <- factor(manifest$got.assigned.seat,
+                                             levels = c("Yes", "No"))
+
+        if(plot.airplane == TRUE){
+                ap <- ggplot(manifest, aes(x = seat, y = row, group = last.passenger))
+                ap <- ap + scale_y_reverse()
+                ap <- ap + geom_point(aes(color = last.passenger, fill = got.assigned.seat),
+                      shape = 22, size = 5)
+                ap <- ap + scale_color_manual(values = c("black", "red")) + 
+                        scale_fill_manual(values = c("white", "darkblue"))
+                print(ap)
+        }
+        out <- data.frame(n.not.assigned = sum(manifest$got.assigned.seat == "No"),
+                          last.got.assigned = manifest$got.assigned.seat[manifest$last.passenger == "Yes"]
+                         )
+        return(out)
+}
+```
+
+```{r, fig.width=3.5, fig.height= 3.5}
+fill.airplane(rows = 10, seats = 3, plot.airplane = TRUE)
+```
+
+## Run the simulation
+
+Run the simulation 100 times for an airplane with 27 rows, 6 seats per row. How often did the last person get his assigned seat? How many people did not get their assigned seats?
+
+```{r, echo = FALSE}
+
+sim.1 <- data.frame(n.not.assigned = rep(NA, 100),
+                  last.got.assigned = factor(rep(NA, 100), levels = c("No", "Yes"))
+                  )
+
+for(i in 1:nrow(sim.1)){
+        sim.1[i,] <- fill.airplane()
+}
+```
+
+```{r}
+head(sim.1, 3)
+table(sim.1$last.got.assigned)
+```
+
+## Run the simulation
+
+```{r, message=FALSE, fig.width=4, fig.height=3.5}
+ggplot(sim.1, aes(x = n.not.assigned)) + geom_histogram()
+```
+
