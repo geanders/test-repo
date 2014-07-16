@@ -88,9 +88,9 @@ manifest$got.assigned.seat <- factor(manifest$got.assigned.seat,
 ## Plot the plane again, and this time use the fill of the boxes to show
 ## who got an assigned seat and who didn't
 ap <- ggplot(manifest, aes(x = seat, y = row, group = last.passenger))
-ap <- ap + scale_y_reverse()
 ap <- ap + geom_point(aes(color = last.passenger, fill = got.assigned.seat),
                       shape = 22, size = 5)
+ap <- ap + scale_y_reverse()
 ap <- ap + scale_color_manual(values = c("black", "red")) + 
         scale_fill_manual(values = c("white", "darkblue"))
 print(ap)

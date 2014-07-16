@@ -48,9 +48,9 @@ fill.airplane <- function(rows = 27, seats = 6, plot.airplane = FALSE){
 
         if(plot.airplane == TRUE){
                 ap <- ggplot(manifest, aes(x = seat, y = row, group = last.passenger))
-                ap <- ap + scale_y_reverse()
                 ap <- ap + geom_point(aes(color = last.passenger, fill = got.assigned.seat),
-                      shape = 22, size = 5)
+                                      shape = 22, size = 5)
+                ap <- ap + scale_y_reverse()
                 ap <- ap + scale_color_manual(values = c("black", "red")) + 
                         scale_fill_manual(values = c("white", "darkblue"))
                 print(ap)
