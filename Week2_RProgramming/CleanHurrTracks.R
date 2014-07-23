@@ -105,7 +105,7 @@ for(i in 1:length(hurr.file.names)){
         }
 }
 
-head(hurr.paths.df)
+head(hurr.paths.df[, c("date", "storm")], 40)
 
 ## with everything in the same dataframe, it's easy to do things like get the
 ## means or ranges of a value across all storms. For example, 
