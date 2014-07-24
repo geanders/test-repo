@@ -82,7 +82,7 @@ ggplot(df, aes(x = Heart.Rate)) + geom_histogram(binwidth = 1)
 table(as.factor(df$Heart.Rate)) ## Note-- I'm not changing Heart.Rate to a 
                                 ## factor, just having "table" think of it as
                                 ## a factor.
-max(table(as.factor(df$Heart.Rate)))
+which.max(table(as.factor(df$Heart.Rate)))
 100 * max(table(as.factor(df$Heart.Rate))) / nrow(df) ## This is about 7% of all observaations!
 unique(strftime(df$DateTime[df$Heart.Rate == 122], format = "%H"))
 ## All of these readings were between 12 and 1 pm.

@@ -61,7 +61,7 @@ shapefile <- readShapeSpatial("~/Downloads/tl_2010_08_zcta510/tl_2010_08_zcta510
 study.shapefile <- subset(shapefile, ZCTA5CE10 %in% study.zips)
 data <- fortify(study.shapefile, region = "ZCTA5CE10")
 
-qmap('poudre canyon', zoom = 9) +
+qmap('poudre canyon', zoom = 9, maptype = "satellite") +
         geom_polygon(aes(x = long, y = lat, group = group), data = data,
                      colour = 'blue', fill = NA, size = 1.5)
 
@@ -142,6 +142,7 @@ mosaicplot(flood.survey$Q68 ~ flood.survey$inconv)
 table(flood.survey$inconv, flood.survey$Q68)
 ## You can look at the relationship using ordered logistic regression. There's
 ## a good tutorial for doing this in R at: http://www.ats.ucla.edu/stat/r/dae/ologit.htm
+library(MASS)
 mod <- polr(Q68 ~ inconv, data = flood.survey, Hess = TRUE)
 summary(mod)
 ctable <- coef(summary(mod))
