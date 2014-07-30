@@ -68,6 +68,8 @@ reduced.df <- df[!is.na(df$action),]
 ggplot(reduced.df, aes(x = DateTime, y = Heart.Rate)) + geom_point() + 
         facet_grid(. ~ action, scales = "free_x") + 
         ggtitle("Heart Rate")
+
+ggplot(reduced.df, aes(x = Minute.Ventilation)) + geom_histogram(bin = 1)
 ggplot(reduced.df, aes(x = DateTime, y = Minute.Ventilation)) + geom_point() + 
         facet_grid(. ~ action, scales = "free_x") + 
         ggtitle("Minute Ventilation")
@@ -95,4 +97,59 @@ ggplot(reduced.df, aes(x = Heart.Rate, y = Minute.Ventilation)) +
         geom_point(alpha = 0.4, 
                    position = position_jitter(width = 0.5, height = 1)) + 
         geom_smooth(method = lm) + 
+        ggtitle("Heart Rate vs. Minute Ventilation")
+
+## Let's fit some actual models
+
+## Simplest possible model-- predicts every value is the overall mean for that
+## value.
+mean(reduced.df$Minute.Ventilation)
+mod.1 <- lm(Minute.Ventilation ~ 1, data = reduced.df)
+summary(mod.1)
+head(predict(mod.1))
+ggplot(reduced.df, aes(x = Heart.Rate, y = Minute.Ventilation)) + 
+        geom_point() +
+        geom_point(aes(x = Heart.Rate, y = predict(mod.1)), color = "red")
+head(resid(mod.1)) ## Check the residuals
+ggplot(reduced.df, aes(x = resid(mod.1))) + geom_histogram(bin = 1)
+ggplot(reduced.df, aes(x = Heart.Rate, y = resid(mod.1))) + geom_point()
+
+## Slightly more complex-- predicts that each value will be the mean value
+## for its activity type
+class(reduced.df$action)
+tapply(reduced.df$Minute.Ventilation, reduced.df$action, mean)
+mod.2 <- lm(Minute.Ventilation ~ action, data = reduced.df)
+summary(mod.2)
+levels(reduced.df$action)
+ggplot(reduced.df, aes(x = Heart.Rate, y = Minute.Ventilation)) + 
+        geom_point() +
+        geom_point(aes(x = Heart.Rate, y = predict(mod.2)), color = "red")
+ggplot(reduced.df, aes(x = resid(mod.2))) + geom_histogram(bin = 1)
+ggplot(reduced.df, aes(x = Heart.Rate, y = resid(mod.2))) + geom_point()
+
+## A simple linear model
+mod.3 <- lm(Minute.Ventilation ~ Heart.Rate, data = reduced.df)
+summary(mod.3)
+ggplot(reduced.df, aes(x = Heart.Rate, y = Minute.Ventilation)) + 
+        geom_point() +
+        geom_point(aes(x = Heart.Rate, y = predict(mod.3)), color = "red")
+ggplot(reduced.df, aes(x = resid(mod.3))) + geom_histogram(bin = 1)
+ggplot(reduced.df, aes(x = Heart.Rate, y = resid(mod.3))) + geom_point()
+
+## More complex-- the same slope for Heart.Rate for each action, but different
+## intercepts
+mod.4 <- lm(Minute.Ventilation ~ Heart.Rate + action, data = reduced.df)
+summary(mod.3)
+ggplot(reduced.df, aes(x = Heart.Rate, y = Minute.Ventilation)) + 
+        geom_point() +
+        geom_point(aes(x = Heart.Rate, y = predict(mod.4)), color = "red")
+ggplot(reduced.df, aes(x = resid(mod.4))) + geom_histogram(bin = 1)
+ggplot(reduced.df, aes(x = Heart.Rate, y = resid(mod.4))) + geom_point()
+
+
+## Dangers-- overfitting to your specific data
+ggplot(reduced.df, aes(x = Heart.Rate, y = Minute.Ventilation, color = action)) + 
+        geom_point(alpha = 0.4, 
+                   position = position_jitter(width = 0.5, height = 1)) + 
+        geom_smooth() + 
         ggtitle("Heart Rate vs. Minute Ventilation")
