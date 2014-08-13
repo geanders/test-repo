@@ -1,0 +1,273 @@
+---
+title: "Statistical Inference"
+author: "Brooke Anderson"
+date: "August 13, 2014"
+output: beamer_presentation
+subtitle: Weeks 1 and 2
+---
+
+## Topics covered online
+
+Week 1:
+
+- Probability
+- Conditional probability
+- Expectations
+
+Week 2:
+
+- Variability
+- Common distributions
+- Asymptotics
+
+## Topics we'll cover in depth
+
+Conceptual: 
+
+- Independence (Conditional probability lecture)
+
+In depth: 
+
+- Using simulation in R to understand the material (starts in Expectation lecture)
+
+Independence
+============
+
+## Independence
+
+It is always true that $$P(A \cap B) = P(A)P(B|A)$$
+
+If two events $A$ and $B$ are **independent**, then $$P(A \cap B) = P(A)P(B)$$
+
+What is the probability of getting two consecutive heads?
+
+- $A = \{\mbox{Head on flip 1}\}$ ~ $P(A) = .5$
+- $B = \{\mbox{Head on flip 2}\}$ ~ $P(B) = .5$
+- $A \cap B = \{\mbox{Head on flips 1 and 2}\}$
+- $P(A \cap B) = P(A)P(B) = .5 \times .5 = .25$ 
+
+## Independence
+
+It is **critical** to remember that $P(A \cap B) = P(A)P(B)$ **only** when A and B are *independent* of each other.
+
+*(Remember, independence means that the outcome of A has no influence on B's outcome and vice versa.)*
+
+What kinds of silly conclusions do we come to if we forget this?
+
+## The case of the matching dirt
+
+*Miller v. State, Arkansas* 
+(from *Statistics for Lawyers*, Finkelstein and Levin)
+
+A burglary occurred, and the police picked up a suspect. The suspect had dirt on his clothes. The police tested the dirt to see if it matched dirt at the place that was robbed in terms of color, texture, and density. 
+
+It was a match on all three! What are the chances that this would happen if the dirt didn't come from the place that was robbed? 
+
+Bring on the experts... 
+
+## The case of the matching dirt
+
+Here are the chances that any dirt would be of the color, texture, and density of the dirt that was at the crime scene:
+
+- $P({Color.match}) = 1 / 10$
+- $P(Texture.match) = 1/100$
+- $P(Density.match) = 1/1000$
+
+So what are the chances of all three matching?
+
+According to the expert, one in a million: $$(1/10)*(1/100)*(1/1000) = 1/1,000,000$$
+
+## The case of the matching dirt
+
+So, he did it, right?
+
+Well... what if soil that matches on density usually matches on texture, and if there's a match on density and texture, the color always matches:
+
+- $P(Texture|Density) = 8 / 10$
+- $P(Color|Density \cap Texture) = 10/10$
+
+Then, the probability of matching all three is much higher than one in a million: $$P(Color \cap Texture \cap Density)=$$ $$P(Density)*P(Texture|Density)*P(Color|Density \cap Texture) = $$ $$(1/1000)*(8/10)*(10/10) = 8/10,000$$
+
+## The case of the matching dirt
+
+This makes a big difference in how seriously the jury would consider the evidence. 
+
+Say the crime happened in a city of 200,000. 
+
+If the first odds calculated were correct, the suspect's probably the only person in the city with matching dirt on his clothes. 
+
+If the second are right, there are probably 160 or so people in the city with matching dirt on their clothes.
+
+## Independence
+
+Let's think of an even simplier example of how silly results can be when people messed this up:
+
+What are the chances that, if you randomly pick an adult from the US population, the person is a man, has an Adam's apple, and is capable of growing a beard?
+
+- $P(Man)=0.5$
+- $P(Adams.apple)=0.5$
+- $P(Beard)=0.5$
+
+$$P(Man \cap Adams.apple \cap Beard) = (0.5)(0.5)(0.5) = 0.125$$
+
+So you'd only expect about 12.5% of the people you picked to have all three, right??
+
+## Independence 
+
+This question of whether you can assume independence is common in legal cases:
+
+- *People v. Collins, 1968*: A woman was robbed by a couple in a yellow car, a white woman with a blond pony tail and a black man with a mustache and beard.
+- SIDS example given in online lecture
+- DNA profiles
+
+## Independence
+
+More importantly, this question of independence underlies most of the types of statistical methods you will use, many of which rely on the assumption that you're working with iid random variables:
+
+- Random variables are said to be iid if they are independent and identically distributed (have the same distribution)
+
+## Independence
+
+So, think about these examples-- are the observations independent?
+
+- Ten coin flips
+- Mortality outcomes following heart attacks from two different hospitals
+- Daily outcomes of whether or not someone won the lottery
+- Daily temperatures over a year
+- Test scores from a group of students before and after joining a tutoring program
+- Yearly outcomes of whether or not the Big Thompson River experienced a 100-year flood
+- Temperatures today in the 100 biggest US cities
+
+## Independence
+
+When variables are iid, the math gets easier. As a result, iid variables are often assumed in the methods you will use for, for example:
+
+- Testing whether two populations have equal means
+- Testing significance of regression coefficients (residuals are assumed iid)
+
+When you do regression analytics, you're often checking to see if the residuals look like they're iid (to make sure this assumptions okay to make).
+
+## Independence
+
+You will learn methods (at some point) that specifically cater to a lack of independence in the observations, for example:
+
+- Time series models 
+- Spatial models
+- Paired t-tests 
+- Multi-level models
+
+Simulation in R to learn
+========================
+
+## Welcome to the laboratory...
+
+First, let's use R to to simulate a dice roll. Let's create a vector of the possible outcomes, with "0" for heads and "1" for tails.
+
+```{r}
+outcomes <- c(1:6)
+outcomes
+```
+
+Then, we'll create a vector of the probabilities of each outcome. We'll say this is a fair die, so $p=1/6$ for each outcome:
+```{r}
+p.outcomes <- rep(1/6, 6)
+p.outcomes
+```
+
+## Using R to simulate dice rolls
+
+Now, if we want to sample just roll, we can do that:
+```{r}
+sample(outcomes, size = 1, prob = p.outcomes)
+```
+
+We can also put the result in it's own object, so we can use it later:
+```{r}
+dice.roll <- sample(outcomes, size = 1, prob = p.outcomes)
+dice.roll
+```
+
+## Using R to simulate dice rolls
+
+It's very easy to scale this up to simulate many dice rolls. We just change the "size" (which is how many samples it'll take) and add "replace = TRUE".
+
+```{r}
+dice.roll <- sample(outcomes, size = 10, prob = p.outcomes, replace = TRUE)
+dice.roll
+```
+
+*Questions for you:* 
+
+- *What does "replace = TRUE" do?* 
+- *What would happen if we didn't have it in there?* 
+- *When might you want to sample using "replace = FALSE"?*
+
+## Using R to simulate dice rolls
+
+Now, let's simulate 1,000 dice rolls and then plot the outcomes using a histogram. Before we do:
+
+- What do you expect the histogram will look like?
+- What do you expect will be the mean value of all the rolls?
+
+## Using R to simulate dice rolls
+
+Okay, so let's do it:
+
+```{r}
+dice.roll <- sample(outcomes, size = 1000, prob = p.outcomes, replace = TRUE)
+mean(dice.roll)
+```
+
+*Question for you:*
+
+- *Did you get a slightly different answer from me?*
+- *Why?*
+- *What could we do to make sure we got the exact same answer every time?*
+
+## Using R to simulate dice rolls
+
+And now let's plot the histogram: 
+
+```{r, fig.align='center', message = FALSE, fig.height=3, fig.width=5}
+library(ggplot2)
+qplot(dice.roll, geom = "histogram")
+```
+
+## Using R to simulate dice rolls
+
+Now, imagine you do three different simulations:
+
+- 5 dice rolls 
+- 20 dice rolls
+- 500 dice rolls
+
+For each simulation, you take the mean of all rolls and plot a histogram. 
+
+*Questions for you:*
+
+- *Which mean would be closest to 3.5?*
+- *Which histogram would look the most like the real probability mass function?* 
+- *Why?*
+
+## Using R to simulate dice rolls
+
+Here are my histograms: 
+
+```{r, echo = FALSE, message = FALSE, fig.width = 8, fig.height = 3, fig.align='center'}
+sim.1 <- sample(outcomes, size = 5, prob = p.outcomes, replace = TRUE)
+sim.2 <- sample(outcomes, size = 20, prob = p.outcomes, replace = TRUE)
+sim.3 <- sample(outcomes, size = 500, prob = p.outcomes, replace = TRUE)
+
+p.1 <- qplot(sim.1, geom = "histogram", main = "5 rolls",
+             xlab = "Outcome", ylab = "# of rolls")
+p.2 <- qplot(sim.2, geom = "histogram", main = "20 rolls",
+             xlab = "Outcome", ylab = "# of rolls")
+p.3 <- qplot(sim.3, geom = "histogram", main = "500 rolls",
+             xlab = "Outcome", ylab = "# of rolls")
+
+library(gridExtra)
+grid.arrange(p.1, p.2, p.3, ncol = 3)
+```
+
+- *Will the same simulation always come closest to the theoretical distribution?*
+- *Will the same simulation always come closest to the theoretical mean?*
