@@ -1,0 +1,449 @@
+---
+title: "Statistical Inference"
+subtitle: "Meeting, Week 3"
+author: "Brooke Anderson"
+date: "August 19, 2014"
+output: ioslides_presentation
+---
+
+## Topics covered online
+
+Confidence intervals using the t-distribution:
+
+- Paired observations
+- Two sample with same variance
+- Two samples with different variances
+
+Hypothesis testing
+
+p-Values
+
+## Topics for today
+
+Variance / Central Limit Theorem 
+
+- Variance
+- Asymptopia
+
+Powerball
+
+Central Limit Theorem
+=====================
+
+## Continuing our dice simulation...
+
+Recall from last time, we had used R to simulate 5, 20, and 500 dice rolls, with the following outcomes:
+
+```{r, echo = FALSE, message = FALSE, fig.width = 8, fig.height = 3, fig.align='center'}
+library(ggplot2)
+outcomes <- c(1:6)
+p.outcomes <- rep(1/6, 6)
+sim.1 <- sample(outcomes, size = 5, prob = p.outcomes, replace = TRUE)
+sim.2 <- sample(outcomes, size = 20, prob = p.outcomes, replace = TRUE)
+sim.3 <- sample(outcomes, size = 500, prob = p.outcomes, replace = TRUE)
+
+p.1 <- qplot(sim.1, geom = "histogram", main = "5 rolls",
+             xlab = "Outcome", ylab = "# of rolls")
+p.2 <- qplot(sim.2, geom = "histogram", main = "20 rolls",
+             xlab = "Outcome", ylab = "# of rolls")
+p.3 <- qplot(sim.3, geom = "histogram", main = "500 rolls",
+             xlab = "Outcome", ylab = "# of rolls")
+
+library(gridExtra)
+grid.arrange(p.1, p.2, p.3, ncol = 3)
+```
+
+## Continuing our dice simulation...
+
+We talked about:
+
+- Which sample (n =5, 20, or 500) is likely to have a distribution closest to the theoretical distribution?
+- Which sample is likely to have a mean closest to the theoretical mean?
+- Will the largest sample **always** be the one that comes closest to the theoretical values?
+- (Casey's point) How are the variances of the different samples likely to differ? 
+
+*Question for you:*
+
+- *If you had to bet which sample would have the largest variance, which sample would you bet on?*
+- *If you had to bet which sample would have the smallest variance, which sample would you bet on?*
+
+## Variance
+
+So, let's talk for a second about variance before moving on. 
+
+Theoretically, for a random variable, if $X$ is a random variable with mean $\mu$, the variance of $X$ is defined as
+
+$$
+Var(X) = E[(X - \mu)^2] = E[X^2] - E[X]^2
+$$ 
+
+The sample variance from a sample of data is 
+$$
+S^2 = \frac{\sum_{i=1} (X_i - \bar X)^2}{n-1}
+$$
+
+## Variance
+
+From the variance lecture:
+
+- What's the variance from the result of a toss of a die? 
+
+  - $E[X] = 3.5$ 
+  - $E[X^2] = 1 ^ 2 \times \frac{1}{6} + 2 ^ 2 \times \frac{1}{6} + 3 ^ 2 \times \frac{1}{6} + 4 ^ 2 \times \frac{1}{6} + 5 ^ 2 \times \frac{1}{6} + 6 ^ 2 \times \frac{1}{6} = 15.17$ 
+
+- $Var(X) = E[X^2] - E[X]^2 \approx 2.92$
+
+## Variance
+
+From our three samples:
+
+```{r, echo = TRUE}
+var(sim.1)  ## 5 rolls
+var(sim.2)  ## 20 rolls
+var(sim.3)  ## 500 rolls
+```
+
+## Simulating lots of rolls of each size
+
+So far, we've only simulated a single roll of each sample size, and we've talked about what we expect from the different samples. 
+
+Now let's check our expectations by simulating many different dice rolls for each sample size and seeing how the means and variances of these samples actually behave.
+
+## Simulating lots of rolls of each size
+
+First, let's set up a dataframe with the values from our simulation. For example, we can create a matrix with 1,000 simulations of five rolls with:
+
+```{r}
+nosim <- 1000 ## Number of samples we'll simulate
+sim.1 <- matrix(sample(c(1:6), 5*nosim, replace = TRUE),
+                nrow = nosim)
+head(sim.1)
+```
+
+```{r, echo = FALSE}
+sim.2 <- matrix(sample(c(1:6), 20*nosim, replace = TRUE),
+                nrow = nosim)
+sim.3 <- matrix(sample(c(1:6), 500*nosim, replace = TRUE),
+                nrow = nosim)
+```
+
+## Simulating lots of rolls of each size
+
+In R, you can use the apply function to perform the same function on all columns or rows of a matrix.
+
+So, to get the mean of all of the samples with 5 rolls, we can run:
+
+```{r}
+sim.1.mn <- apply(sim.1, MARGIN = 1, FUN = mean)
+sim.1.mn[1:5]
+```
+
+And to get the variance:
+
+```{r}
+sim.1.var <- apply(sim.1, MARGIN = 1, FUN = var)
+sim.1.var[1:5]
+```
+
+```{r, echo = FALSE}
+sim.2.mn <- apply(sim.2, MARGIN = 1, FUN = mean)
+sim.3.mn <- apply(sim.3, MARGIN = 1, FUN = mean)
+sim.2.var <- apply(sim.2, MARGIN = 1, FUN = var)
+sim.3.var <- apply(sim.3, MARGIN = 1, FUN = var)
+```
+
+## Interlude: Why we care
+
+Why do we care about how the means and variances of populations of different size samples behave?
+
+Many of the questions we'll want to use statistics to answer deal with the mean of a sample. For example:
+
+- Twenty students are tested before and after taking a class. Their scores improve, on average, by 2 points. What are the chances of getting this large of an improvement on tests randomly?
+- One hundred people with a certain type of cancer are randomized to two treatment groups. After a year, 80% in one group survived and 60% in the other group. What are the chances of this happening randomly?
+
+## Simulating lots of rolls of each size
+
+Now we're set to check out the patterns of the means and variances of all these samples. 
+
+*Questions for you:*
+
+- *Before we plot, what do you think the distribution of the means of the 1,000 samples of five dice rolls will look like?*
+- *What do you think the distribution of the variances will look like?*
+- *What do you think is the mean value of all the sample means?*
+- *What do you think is the mean value of all the sample variances?*
+
+## Distribution of means and variances for 5-roll samples
+
+```{r, echo = FALSE, fig.align='center'}
+g1 <- qplot(sim.1.mn, geom = "histogram", binwidth = .2,
+            main = "Dist. of sample means (n = 5)",
+            xlab = "Sample mean", 
+            ylab = "# of samples")
+g1 <- g1 + geom_vline(xintercept = 3.5, color = "blue")
+g1 <- g1 + geom_vline(xintercept = mean(sim.1.mn), color = "red")
+g2 <- qplot(sim.1.var, geom = "histogram", binwidth = .4,
+            main = "Dist. of sample variances (n = 5)",
+            xlab = "Sample variance", 
+            ylab = "# of samples")
+g2 <- g2 + geom_vline(xintercept = 2.9, color = "blue")
+g2 <- g2 + geom_vline(xintercept = mean(sim.1.var), color = "red")
+grid.arrange(g1, g2, ncol = 2)
+```
+
+## Means and variances for different sample sizes
+
+Now, think about different sample sizes (5, 20, or 500 rolls).
+
+*Questions for you:*
+
+- *How do you expect the shape of the distribution of the sample means to change as you increase the number of rolls in each sample?*
+- *How do you expect the shape of the distribution of the sample variance to change?*
+- *For which sample size will the largest percentage of samples be within 1 unit of the theoretical value (mean or variance)?*
+- *If you were going to take one sample of each size and you had to bet on which sample would have the largest mean, which would you bet on? What about the largest variance?* 
+
+## Means for different sample sizes
+
+```{r, fig.align='center',fig.height=4, fig.width=8, echo = FALSE, warning=FALSE, error=FALSE, message=FALSE}  
+dat <- data.frame(
+  x = c(apply(matrix(sample(1 : 6, nosim * 5, replace = TRUE), 
+                     nosim), 1, mean),
+        apply(matrix(sample(1 : 6, nosim * 20, replace = TRUE), 
+                     nosim), 1, mean),
+        apply(matrix(sample(1 : 6, nosim * 500, replace = TRUE), 
+                     nosim), 1, mean)
+        ),
+  size = factor(rep(c(5, 20, 500), rep(nosim, 3))))
+g <- ggplot(dat, aes(x = x, fill = size)) + geom_histogram(alpha = .20, binwidth=.3, colour = "black") +
+        xlab("Sample mean") + 
+        ylab("# of samples")
+g <- g + geom_vline(xintercept = 3.5, size = 1.5)
+g + facet_grid(. ~ size)
+```
+
+## Variances for different sample sizes
+
+```{r, fig.align='center',fig.height=4, fig.width=8, echo = FALSE, warning=FALSE, error=FALSE, message=FALSE}  
+dat <- data.frame(
+  x = c(apply(matrix(sample(1 : 6, nosim * 5, replace = TRUE), 
+                     nosim), 1, var),
+        apply(matrix(sample(1 : 6, nosim * 20, replace = TRUE), 
+                     nosim), 1, var),
+        apply(matrix(sample(1 : 6, nosim * 500, replace = TRUE), 
+                     nosim), 1, var)
+        ),
+  size = factor(rep(c(5, 20, 500), rep(nosim, 3))))
+g <- ggplot(dat, aes(x = x, fill = size)) + geom_histogram(alpha = .20, binwidth=.3, colour = "black") +
+        xlab("Sample variance") + 
+        ylab("# of samples")
+g <- g + geom_vline(xintercept = 2.92, size = 1.5)
+g + facet_grid(. ~ size)
+```
+
+## Mean and variances of sample means
+
+From the variance lecture:
+
+- We know that the distribution of the sample mean, $\bar X$, is centered around the population
+mean, $E[\bar X] = \mu$
+- We also know that its variance is $Var(\bar X) = \sigma^2 / n$
+
+*Questions for you (refresher):*
+
+- *What is the name of the R object where we recorded all the sample means for the n=5 samples?*
+- *What is the value of $n$ for the different sample simulations?*
+- *What is the value of $\sigma^2$ for the different sample simulations?*
+
+## Variances of sample means
+
+```{r}
+df <- data.frame(n = c(5, 20, 500))
+df$var <- c(var(sim.1.mn), var(sim.2.mn), var(sim.3.mn))
+df$sigma2.over.n <- 2.9 / df$n
+df
+```
+
+## Distribution of sample means
+
+```{r, message=FALSE, warning=FALSE, fig.align='center', fig.width = 4, fig.height = 3}
+g <- qplot(sim.1.mn, geom = "blank") + 
+        geom_histogram(aes(y=..density..), binwidth = .2, 
+                    colour="black", fill="white") +
+        xlab("Sample mean")
+g + stat_function(fun = dnorm, args = list(mean = mean(sim.1.mn),
+                                   sd = sqrt(2.9 / 5)))
+```
+
+## If we don't know $\sigma^2$
+
+- The variance of sample mean is $\sigma^2 / n$
+- Its logical estimate is $s^2 / n$
+
+```{r}
+2.9 / 5
+sim.1.var[1:5] / 5
+mean(sim.1.var / 5)
+```
+
+## If we don't know $\sigma^2$
+
+```{r}
+2.9 / 500
+sim.3.var[1:5] / 500
+mean(sim.3.var / 500)
+```
+
+## The Central Limit Theorem
+
+From the Asymptotia lecture:
+
+- The **Central Limit Theorem** (CLT) is one of the most important theorems in statistics
+- For our purposes, the CLT states that the distribution of averages of iid variables (properly normalized) becomes that of a standard normal as the sample size increases
+- The CLT applies in an endless variety of settings
+- The result is that 
+$$\frac{\bar X_n - \mu}{\sigma / \sqrt{n}}=
+\frac{\sqrt n (\bar X_n - \mu)}{\sigma}
+= \frac{\mbox{Estimate} - \mbox{Mean of estimate}}{\mbox{Std. Err. of estimate}}$$ has a distribution like that of a standard normal for large $n$.
+- (Replacing the standard error by its estimated value doesn't change the CLT)
+- The useful way to think about the CLT is that 
+$\bar X_n$ is approximately
+$N(\mu, \sigma^2 / n)$
+
+## Using the CLT
+
+We can use this information to answer questions like:
+
+If you roll a die twenty times, what is the chance of the average roll value being 5 or higher randomly? (Maybe you rolled a die 20 times, got this average, and you want to get a sense of whether the die is loaded.) 
+
+## Using the CLT
+```{r}
+dnorm(5, mean = 3.5, sd = sqrt(2.9 / 20))
+
+test.stat <- (5 - 3.5) / sqrt(2.9 / 20)
+dnorm(test.stat)
+```
+
+## To summarize
+
+From the variance lecture:
+
+- The sample variance, $S^2$, estimates the population variance, $\sigma^2$
+- The distribution of the sample variance is centered around $\sigma^2$
+- The variance of sample mean is $\sigma^2 / n$
+  - Its logical estimate is $s^2 / n$
+  - The logical estimate of the standard error is $s / \sqrt{n}$
+- $s$, the standard deviation, talks about how variable the population is
+- $s/\sqrt{n}$, the standard error, talks about how variable averages of random samples of size $n$ from the population are
+
+Powerball
+=========
+
+## Powerball
+
+[![IMAGE ALT TEXT HERE](http://img.youtube.com/vi/xACsFtF38y0/0.jpg)](http://www.youtube.com/watch?v=xACsFtF38y0)
+
+## Powerball
+
+![Alt text](~/test-repo/Week_3StatisticalInference/PowerballWins.png)
+
+## Powerball data
+
+[Colorado Lottery Winners' Report](https://www.coloradolottery.com/PLAY/PLAYERS-TOOLS/WINNERS-REPORT/)
+
+```{r}
+lot.dir <- "COlottery"
+list.files(lot.dir)
+```
+
+## Reading in Powerball data
+
+```{r, message = FALSE}
+library(gdata)
+setwd("COlottery")
+
+## Read data into 'wins' dataframe
+lot.files <- list.files()
+for(i in 1:length(lot.files)){
+        df <- read.xls(lot.files[i], as.is = TRUE)
+        if(i == 1){
+                wins <- df
+        } else {
+                wins <- rbind(wins, df)
+        }
+}
+```
+
+## Cleaning up Powerball data
+
+```{r}
+## Remove some uninteresting columns
+wins <- wins[, -c(1, 6)]
+
+## DateWon looks like this:
+wins$DateWon[1]
+## So let's clean it up and make it a date
+wins$DateWon <- substring(wins$DateWon, 1, 10)
+wins$DateWon <- as.Date(wins$DateWon)
+wins$DateWon[1]
+```
+
+## Powerball data
+
+```{r}
+head(wins)
+```
+
+## Powerball data
+
+```{r}
+prettyNum(sort(unique(wins$AmountWon), decreasing = TRUE), big.mark = ",")
+sort(table(as.factor(wins$City)), decreasing = TRUE)[1:9]
+```
+
+## Distribution of wins
+
+Last week, we talked about whether data describing the number of lottery wins on any given day is independent. 
+
+We think it may be reasonable to assume that lottery wins are randomly distributed across days. Let's say we're doing an analysis where this assumption will make life easier. 
+
+So let's test that two ways:
+
+- Simulate what the data would look like if this assumption is true
+- Use a theoretical distribution to test if this is true
+
+## Simulating lottery win days
+
+Assumption: lottery win days are randomly distributed across all possible win days.
+
+We can create a function that simulates what the winning days are.
+
+During the year (Aug 19, 2013--Aug 18, 2014), the total number of wins was:
+
+```{r}
+n.wins <- nrow(wins)
+n.wins
+```
+
+## Simulating lottery win days
+
+It looks like they only do drawings in Colorado during the week:
+
+```{r}
+unique(as.POSIXlt(wins$DateWon)$wday)
+```
+
+So let's create a vector with all the possible win dates over our study period:
+
+```{r}
+possible.dates <- seq(as.Date("2013-08-19"),
+                      as.Date("2014-08-18"), by = 1) 
+possible.dates <- possible.dates[as.POSIXlt(possible.dates)$wday
+                                 %in% c(1:5)]
+head(possible.dates, 3)
+```
+
+## Simulating lottery win days
+
+```{r}
+sim.wins <- sample(possible.dates, n.wins, replace = TRUE)
+head(sim.wins, 3)
+```

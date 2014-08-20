@@ -2,7 +2,7 @@
 title: "Statistical Inference"
 author: "Brooke Anderson"
 date: "August 13, 2014"
-output: beamer_presentation
+output: ioslides_presentation
 subtitle: Weeks 1 and 2
 ---
 
