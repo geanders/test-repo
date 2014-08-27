@@ -170,7 +170,7 @@ $$
 Now that we can use the Central Limit Theorem to calculate a 95% confidence interval for the mean score when someone with no skill (null hypothesis) throws 20 darts:
 
 ```{r}
-5.635 + c(-1, 1) * qt(.975, 20) * sqrt(2.27)
+5.635 + c(-1, 1) * qnorm(.975) * sqrt(2.27)
 ```
 
 ## Simulating $E[\bar{X}]$ and $Var(\bar{X})$
@@ -216,10 +216,12 @@ head(mean.scores)
 ```{r, fig.align='center', echo = FALSE}
 library(ggplot2)
 xbar.perc <- quantile(mean.scores, probs = c(0.0275, 0.975))
+xbar.ci <- 5.635 + c(-1, 1) * qnorm(.975) * 
+        sqrt(45.42 / n.throws)
 q1 <- qplot(mean.scores, geom = "histogram", binwidth = 0.5) + 
         geom_vline(xintercept = xbar.perc) + 
         geom_vline(xintercept = 5.635, color = "red", size = 2) + 
-        geom_vline(xintercept = c(2.492, 8.778), color = "red") +
+        geom_vline(xintercept = xbar.ci, color = "red") +
         xlab("Mean score over 20 throws") +
         ylab("Number of simulations")
 print(q1)
@@ -266,7 +268,7 @@ mean.scores <- apply(score.throws, MARGIN = 1,
                              return(out)
                      })
 xbar.perc <- quantile(mean.scores, probs = c(0.0275, 0.975))
-xbar.ci <- 5.635 + c(-1, 1) * qt(.975, n.throws) * 
+xbar.ci <- 5.635 + c(-1, 1) * qnorm(.975) * 
         sqrt(45.42 / n.throws)
 q2 <- qplot(mean.scores, geom = "histogram", binwidth = 0.5) + 
         geom_vline(xintercept = xbar.perc) + 
@@ -298,7 +300,7 @@ mean.scores <- apply(score.throws, MARGIN = 1,
                              return(out)
                      })
 xbar.perc <- quantile(mean.scores, probs = c(0.0275, 0.975))
-xbar.ci <- 5.635 + c(-1, 1) * qt(.975, n.throws) * 
+xbar.ci <- 5.635 + c(-1, 1) * qnorm(.975) * 
         sqrt(45.42 / n.throws)
 q3 <- qplot(mean.scores, geom = "histogram", binwidth = 0.5) + 
         geom_vline(xintercept = xbar.perc) + 
