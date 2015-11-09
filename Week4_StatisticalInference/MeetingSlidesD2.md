@@ -41,13 +41,13 @@ head(cbind(throw.x, throw.y))
 ```
 
 ```
-##         throw.x    throw.y
-## [1,] -0.3417724  4.3112002
-## [2,]  5.3568449  0.3986758
-## [3,] -0.1968829 -4.0292692
-## [4,] -3.7015105  1.3955238
-## [5,]  0.9807719 -2.0511807
-## [6,] -3.3563166 -3.6548960
+##        throw.x   throw.y
+## [1,] -2.781695  1.497812
+## [2,]  2.212276  5.030991
+## [3,]  1.304047  4.740485
+## [4,] -2.082358  3.662941
+## [5,] -4.433561 -2.868801
+## [6,]  1.317453  3.512734
 ```
 
 ## Graph of results under the null
@@ -89,7 +89,7 @@ head(throw.dist)
 ```
 
 ```
-## [1] 4.324726 5.371660 4.034077 3.955840 2.273600 4.962169
+## [1] 3.159314 5.495911 4.916578 4.213473 5.280766 3.751664
 ```
 
 ```r
@@ -101,7 +101,7 @@ head(throw.score)
 ```
 
 ```
-## [1] 5  5  5  10 10 5 
+## [1] 10 5  5  5  5  10
 ## Levels: 25 10 5 Null
 ```
 
@@ -117,7 +117,7 @@ table(throw.score)
 ```
 ## throw.score
 ##   25   10    5 Null 
-##    0    4    6    0
+##    0    3    7    0
 ```
 
 ```r
@@ -127,7 +127,7 @@ mean(ex)
 ```
 
 ```
-## [1] 7
+## [1] 6.5
 ```
 
 ## What to expect under the null
@@ -249,9 +249,9 @@ dist.throws[1:3,1:5]
 
 ```
 ##          [,1]     [,2]     [,3]     [,4]     [,5]
-## [1,] 5.235099 4.205553 5.258347 4.730786 5.561223
-## [2,] 7.651559 6.259084 4.711931 1.372088 5.159890
-## [3,] 1.477280 4.269533 3.117517 3.075932 2.679381
+## [1,] 2.319258 7.214366 4.048456 3.215225 2.608573
+## [2,] 8.400306 1.485109 5.147192 6.371826 3.256453
+## [3,] 3.628869 8.531366 4.991656 5.527278 6.430215
 ```
 
 ```r
@@ -259,10 +259,10 @@ score.throws[1:3,1:5]
 ```
 
 ```
-##      [,1]   [,2] [,3] [,4] [,5]
-## [1,] "5"    "5"  "5"  "5"  "5" 
-## [2,] "Null" "5"  "5"  "10" "5" 
-## [3,] "10"   "5"  "10" "10" "10"
+##      [,1]   [,2]   [,3] [,4] [,5]
+## [1,] "10"   "Null" "5"  "10" "10"
+## [2,] "Null" "10"   "5"  "5"  "10"
+## [3,] "10"   "Null" "5"  "5"  "5"
 ```
 
 ## Simulating $E[\bar{X}]$ and $Var(\bar{X})$
@@ -275,74 +275,6 @@ mean.scores <- apply(score.throws, MARGIN = 1,
                                      as.character(x)))
                              return(out)
                      })
-```
-
-```
-## Warning in mean(as.numeric(as.character(x))): NAs introduced by coercion
-```
-
-```
-## Warning in mean(as.numeric(as.character(x))): NAs introduced by coercion
-```
-
-```
-## Warning in mean(as.numeric(as.character(x))): NAs introduced by coercion
-```
-
-```
-## Warning in mean(as.numeric(as.character(x))): NAs introduced by coercion
-```
-
-```
-## Warning in mean(as.numeric(as.character(x))): NAs introduced by coercion
-```
-
-```
-## Warning in mean(as.numeric(as.character(x))): NAs introduced by coercion
-```
-
-```
-## Warning in mean(as.numeric(as.character(x))): NAs introduced by coercion
-```
-
-```
-## Warning in mean(as.numeric(as.character(x))): NAs introduced by coercion
-```
-
-```
-## Warning in mean(as.numeric(as.character(x))): NAs introduced by coercion
-```
-
-```
-## Warning in mean(as.numeric(as.character(x))): NAs introduced by coercion
-```
-
-```
-## Warning in mean(as.numeric(as.character(x))): NAs introduced by coercion
-```
-
-```
-## Warning in mean(as.numeric(as.character(x))): NAs introduced by coercion
-```
-
-```
-## Warning in mean(as.numeric(as.character(x))): NAs introduced by coercion
-```
-
-```
-## Warning in mean(as.numeric(as.character(x))): NAs introduced by coercion
-```
-
-```
-## Warning in mean(as.numeric(as.character(x))): NAs introduced by coercion
-```
-
-```
-## Warning in mean(as.numeric(as.character(x))): NAs introduced by coercion
-```
-
-```
-## Warning in mean(as.numeric(as.character(x))): NAs introduced by coercion
 ```
 
 ```
