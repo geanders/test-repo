@@ -12,23 +12,6 @@ output: ioslides_presentation
 
 Here's our dart board-- the numbers are the number of points you win for a hit in each area.
 
-
-```
-## Error in library(plotrix): there is no package called 'plotrix'
-```
-
-```
-## Error in eval(expr, envir, enclos): could not find function "draw.circle"
-```
-
-```
-## Error in eval(expr, envir, enclos): could not find function "draw.circle"
-```
-
-```
-## Error in eval(expr, envir, enclos): could not find function "draw.circle"
-```
-
 <img src="figure/unnamed-chunk-1-1.png" title="plot of chunk unnamed-chunk-1" alt="plot of chunk unnamed-chunk-1" style="display: block; margin: auto;" />
 
 ## Null hypothesis
@@ -58,13 +41,13 @@ head(cbind(throw.x, throw.y))
 ```
 
 ```
-##        throw.x    throw.y
-## [1,] -4.084359  1.3058913
-## [2,] -4.431558 -6.1498348
-## [3,]  5.108545  5.1780487
-## [4,]  6.572441 -0.4536564
-## [5,] -3.767828  0.4380682
-## [6,]  2.720424 -4.0623754
+##         throw.x    throw.y
+## [1,] -0.3417724  4.3112002
+## [2,]  5.3568449  0.3986758
+## [3,] -0.1968829 -4.0292692
+## [4,] -3.7015105  1.3955238
+## [5,]  0.9807719 -2.0511807
+## [6,] -3.3563166 -3.6548960
 ```
 
 ## Graph of results under the null
@@ -77,29 +60,8 @@ plot(c(-1 * (6 + 5/8), (6 + 5/8)), c(-1 * (6 + 5/8), (6 + 5/8)),
 rect( -1 * (6 + 5/8), -1 * (6 + 5/8),
       (6 + 5/8), (6 + 5/8)) 
 draw.circle( 0, 0, (6 + 5/8), col = "red")
-```
-
-```
-## Error in eval(expr, envir, enclos): could not find function "draw.circle"
-```
-
-```r
 draw.circle( 0, 0, 4, col = "white")
-```
-
-```
-## Error in eval(expr, envir, enclos): could not find function "draw.circle"
-```
-
-```r
 draw.circle( 0, 0, (3 / 4), col = "red")
-```
-
-```
-## Error in eval(expr, envir, enclos): could not find function "draw.circle"
-```
-
-```r
 points(throw.x, throw.y, col = "black", pch = 19)
 ```
 
@@ -127,7 +89,7 @@ head(throw.dist)
 ```
 
 ```
-## [1] 4.288046 7.580183 7.273886 6.588079 3.793208 4.889131
+## [1] 4.324726 5.371660 4.034077 3.955840 2.273600 4.962169
 ```
 
 ```r
@@ -139,7 +101,7 @@ head(throw.score)
 ```
 
 ```
-## [1] 5    Null Null 5    10   5   
+## [1] 5  5  5  10 10 5 
 ## Levels: 25 10 5 Null
 ```
 
@@ -155,24 +117,17 @@ table(throw.score)
 ```
 ## throw.score
 ##   25   10    5 Null 
-##    0    1    4    5
+##    0    4    6    0
 ```
 
 ```r
 ex <- as.numeric(as.character(throw.score))
-```
-
-```
-## Warning: NAs introduced by coercion
-```
-
-```r
 ex <- ex[!is.na(ex)]
 mean(ex)
 ```
 
 ```
-## [1] 6
+## [1] 7
 ```
 
 ## What to expect under the null
@@ -293,10 +248,10 @@ dist.throws[1:3,1:5]
 ```
 
 ```
-##          [,1]     [,2]     [,3]     [,4]      [,5]
-## [1,] 4.790189 2.522072 2.118531 4.325606 0.6329936
-## [2,] 2.037365 5.607447 2.937251 3.507962 5.6932526
-## [3,] 4.004661 7.394938 2.710226 6.420245 6.2221134
+##          [,1]     [,2]     [,3]     [,4]     [,5]
+## [1,] 5.235099 4.205553 5.258347 4.730786 5.561223
+## [2,] 7.651559 6.259084 4.711931 1.372088 5.159890
+## [3,] 1.477280 4.269533 3.117517 3.075932 2.679381
 ```
 
 ```r
@@ -304,10 +259,10 @@ score.throws[1:3,1:5]
 ```
 
 ```
-##      [,1] [,2]   [,3] [,4] [,5]
-## [1,] "5"  "10"   "10" "5"  "25"
-## [2,] "10" "5"    "10" "10" "5" 
-## [3,] "5"  "Null" "10" "5"  "5"
+##      [,1]   [,2] [,3] [,4] [,5]
+## [1,] "5"    "5"  "5"  "5"  "5" 
+## [2,] "Null" "5"  "5"  "10" "5" 
+## [3,] "10"   "5"  "10" "10" "10"
 ```
 
 ## Simulating $E[\bar{X}]$ and $Var(\bar{X})$
@@ -320,6 +275,114 @@ mean.scores <- apply(score.throws, MARGIN = 1,
                                      as.character(x)))
                              return(out)
                      })
+```
+
+```
+## Warning in mean(as.numeric(as.character(x))): NAs introduced by coercion
+```
+
+```
+## Warning in mean(as.numeric(as.character(x))): NAs introduced by coercion
+```
+
+```
+## Warning in mean(as.numeric(as.character(x))): NAs introduced by coercion
+```
+
+```
+## Warning in mean(as.numeric(as.character(x))): NAs introduced by coercion
+```
+
+```
+## Warning in mean(as.numeric(as.character(x))): NAs introduced by coercion
+```
+
+```
+## Warning in mean(as.numeric(as.character(x))): NAs introduced by coercion
+```
+
+```
+## Warning in mean(as.numeric(as.character(x))): NAs introduced by coercion
+```
+
+```
+## Warning in mean(as.numeric(as.character(x))): NAs introduced by coercion
+```
+
+```
+## Warning in mean(as.numeric(as.character(x))): NAs introduced by coercion
+```
+
+```
+## Warning in mean(as.numeric(as.character(x))): NAs introduced by coercion
+```
+
+```
+## Warning in mean(as.numeric(as.character(x))): NAs introduced by coercion
+```
+
+```
+## Warning in mean(as.numeric(as.character(x))): NAs introduced by coercion
+```
+
+```
+## Warning in mean(as.numeric(as.character(x))): NAs introduced by coercion
+```
+
+```
+## Warning in mean(as.numeric(as.character(x))): NAs introduced by coercion
+```
+
+```
+## Warning in mean(as.numeric(as.character(x))): NAs introduced by coercion
+```
+
+```
+## Warning in mean(as.numeric(as.character(x))): NAs introduced by coercion
+```
+
+```
+## Warning in mean(as.numeric(as.character(x))): NAs introduced by coercion
+```
+
+```
+## Warning in mean(as.numeric(as.character(x))): NAs introduced by coercion
+```
+
+```
+## Warning in mean(as.numeric(as.character(x))): NAs introduced by coercion
+```
+
+```
+## Warning in mean(as.numeric(as.character(x))): NAs introduced by coercion
+```
+
+```
+## Warning in mean(as.numeric(as.character(x))): NAs introduced by coercion
+```
+
+```
+## Warning in mean(as.numeric(as.character(x))): NAs introduced by coercion
+```
+
+```
+## Warning in mean(as.numeric(as.character(x))): NAs introduced by coercion
+```
+
+```
+## Warning in mean(as.numeric(as.character(x))): NAs introduced by coercion
+```
+
+```
+## Warning in mean(as.numeric(as.character(x))): NAs introduced by coercion
+```
+
+```
+## Warning in mean(as.numeric(as.character(x))): NAs introduced by coercion
+```
+
+```
+## Warning in mean(as.numeric(as.character(x))): NAs introduced by coercion
 ```
 
 ```
@@ -36785,13 +36848,7 @@ head(mean.scores)
 ## Error in quantile.default(mean.scores, probs = c(0.0275, 0.975)): missing values and NaN's not allowed if 'na.rm' is FALSE
 ```
 
-```
-## Error in get(x, envir = this, inherits = inh)(this, ...): object 'xbar.perc' not found
-```
-
-```
-## Error in print(q1): object 'q1' not found
-```
+<img src="figure/unnamed-chunk-10-1.png" title="plot of chunk unnamed-chunk-10" alt="plot of chunk unnamed-chunk-10" style="display: block; margin: auto;" />
 
 ## Simulating $E[\bar{X}]$ and $Var(\bar{X})$
 
@@ -36825,11 +36882,4 @@ var(mean.scores) ## Theoretical: 2.27
 
 ## Testing against the null
 
-
-```
-## Error in eval(expr, envir, enclos): object 'q1' not found
-```
-
-```
-## Error in arrangeGrob(...): object 'q1' not found
-```
+<img src="figure/unnamed-chunk-12-1.png" title="plot of chunk unnamed-chunk-12" alt="plot of chunk unnamed-chunk-12" style="display: block; margin: auto;" />
