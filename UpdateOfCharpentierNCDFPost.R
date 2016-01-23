@@ -1,6 +1,5 @@
 # Based on http://www.r-bloggers.com/on-ncdf-climate-datasets/
 # Updated to use ncdf4
-# You'll need a `tmp` directory as a subdirectory of your home directory
 # Links worked as of Jan. 2016
 
 library(ncdf4)
@@ -12,8 +11,8 @@ library(ggplot2)
 
 # Example from http://dods.ipsl.jussieu.fr/mc2ipsl/
 download.file("http://dods.ipsl.jussieu.fr/mc2ipsl/CMIP5/output1/IPSL/IPSL-CM5A-MR/historicalNat/day/atmos/day/r1i1p1/latest/tas/tas_day_IPSL-CM5A-MR_historicalNat_r1i1p1_20000101-20121231.nc",
-              destfile="~/tmp/temp.nc")
-nc <- nc_open("~/tmp/temp.nc")
+              destfile="temp.nc")
+nc <- nc_open("temp.nc")
 lon <- ncvar_get(nc,"lon")
 nlon <- dim(lon)
 lat <- ncvar_get(nc,"lat")
@@ -79,8 +78,8 @@ ggplot(data = temp_moy_hist,
 
 download.file(
         "http://freakonometrics.free.fr/carte_europe_df.rda",
-        destfile = "~/tmp/carte_europe_df.rda")
-load("~/tmp/carte_europe_df.rda")
+        destfile = "carte_europe_df.rda")
+load("carte_europe_df.rda")
 
 # Plot monthly summaries by month with country boundaries
 ggplot(data = temp_moy_hist,
